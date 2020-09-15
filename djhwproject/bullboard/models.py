@@ -1,3 +1,58 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
 
-# Create your models here.
+def avatar_path(instance, filename):
+    return 'user{0}/avatars/{1}'.format(instance.user.id, filename)
+
+def ads_path(instance, filename):
+    return 'user{0}/ads/{1}'.format(instance.user.id, filename)
+
+class Profile(models.Model):
+    """
+    Модель профиля пользователя доски объявлений
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
+    birth_date = models.DateField('Date of birth', null=True, blank=True)
+    avatar = models.ImageField(upload_to=avatar_path, default=None)
+    about = models.TextField('About', max_length=500, blank=True)
+
+    def __str__(self):
+        return str(self.user.username)
+
+
+class Categories(models.Model):
+    """
+    Категории объявлений
+    """
+    title = models.CharField(max_length=50)
+    descr = models.TextField(max_length=100)
+
+    def __str__(self):
+        return 'Title {}, description {}'.format(self.title, self.descr)
+
+
+class Ads(models.Model):
+    """
+    Объявления пользователя
+    """
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.TextField(max_length=75)
+    description = models.TextField(max_length=500, blank=True)
+    date_published = models.DateTimeField(default=timezone.now)
+    photo_ad = models.ImageField(upload_to=ads_path)
+    favorites = models.ManyToManyField(User, related_name='users_favorites', blank=True)
+    categ = models.ForeignKey(Categories, on_delete=models.DO_NOTHING, blank=True, null=True)
+
+    def __str__(self):
+        return 'Title {}, сategory{}, date {}, author {}, description {}'.format(self.title, self.categ,
+                                                                                 self.date_published,
+                                                                                 self.author.username, self.description)
+
+
+
+
+
+
+
+
