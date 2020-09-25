@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Все объявления</title>
+</head>
+<body>
+    <ul>
+        {% for ad in ad_feed %}
+            <p><a href="{% url 'ad_detail' ad.id%}">{{ ad }}</a></p>
+        {% endfor %}
+    </ul>
+</body>
+</html>

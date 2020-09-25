@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+</head>
+<body>
+    Приветствуем Вас на главной странице Доски Объявлений Bullboard!
+    <p>Горячие объявления</p>
+    <p>{{ descr }}</p>
+    <ul>
+        {% for ad in ads %}
+            <p><a href="{% url 'ad_detail' ad.id%}">{{ ad }}</a></p>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

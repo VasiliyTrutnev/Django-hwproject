@@ -6,7 +6,7 @@ def avatar_path(instance, filename):
     return 'user{0}/avatars/{1}'.format(instance.user.id, filename)
 
 def ads_path(instance, filename):
-    return 'user{0}/ads/{1}'.format(instance.user.id, filename)
+    return 'user{0}/ads/{1}'.format(instance.author.id, filename)
 
 class Profile(models.Model):
     """
@@ -39,7 +39,7 @@ class Ads(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField(max_length=75)
     description = models.TextField(max_length=500, blank=True)
-    date_published = models.DateTimeField(default=timezone.now)
+    date_published = models.DateTimeField(auto_now_add=True)
     photo_ad = models.ImageField(upload_to=ads_path)
     favorites = models.ManyToManyField(User, related_name='users_favorites', blank=True)
     categ = models.ForeignKey(Categories, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -48,6 +48,13 @@ class Ads(models.Model):
         return 'Title {}, сategory{}, date {}, author {}, description {}'.format(self.title, self.categ,
                                                                                  self.date_published,
                                                                                  self.author.username, self.description)
+    @property
+    def get_favorites(self):
+        return self.favorites.count()
+    @property
+    def photo_ad_url(self):
+        if self.photo_ad and hasattr(self.photo_ad, 'url'):
+            return self.photo_ad.url
 
 
 
