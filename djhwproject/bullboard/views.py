@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from .models import Profile, Categories, Ads
 from django.db.models import Count
 from django.template import loader
@@ -22,10 +22,18 @@ def allads(request):
     return HttpResponse(template.render(context))
 
 def ad_detail(request, ad_id):
-    ad = Ads.objects.get(id=ad_id)
-    response = "id:{}|description:{}|author:{}".format(ad.id, ad.description, ad.author)
-    return HttpResponse(response)
+    try:
+        ad = Ads.objects.get(id=ad_id)
+    except Ads.DoesNotExist:
+        raise Http404
+    context = {
+        'ad': ad
+    }
+    return render(request, 'bullboard/ad_detail.html', context)
 
 def ad_by_category(request):
-    ad_by_category_queryset = Ads.objects.all()
-    return HttpResponse(ad_by_category_queryset)
+    categ = Ads.objects.all()
+    context = {
+        'categ': categ
+    }
+    return render(request, 'bullboard/categories.html', context)
