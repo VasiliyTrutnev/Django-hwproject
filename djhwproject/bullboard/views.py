@@ -32,8 +32,15 @@ def ad_detail(request, ad_id):
     return render(request, 'bullboard/ad_detail.html', context)
 
 def ad_by_category(request):
-    categ = Ads.objects.all()
+    categ = Categories.objects.all()
     context = {
         'categ': categ
     }
     return render(request, 'bullboard/categories.html', context)
+
+def category_detail(request, category_id):
+    cat = Ads.objects.filter(id=category_id)
+    context = {
+        'cat': cat
+    }
+    return render(request, 'bullboard/category_detail.html', context)

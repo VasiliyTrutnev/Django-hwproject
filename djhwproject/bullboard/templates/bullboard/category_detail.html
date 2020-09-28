@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.title }}</title>
+</head>
+<body>
+    {% for ad in cat %}
+        <p>{{ ad.title }}</p>
+        <p><img alt="ad's image" src="{{ ad.photo_ad.url }}"
+                style="width: 1000px; height: 1000px"></p>
+        <p>{{ ad.description }}</p>
+        <p>{{ ad.date_published }}</p>
+        <p>{{ ad.author }}</p>
+    {% endfor %}
+</body>
+</html>

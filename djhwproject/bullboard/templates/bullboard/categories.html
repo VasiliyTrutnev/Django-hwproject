@@ -5,6 +5,12 @@
     <title>Категории объявлений</title>
 </head>
 <body>
-
+     <ul>
+         {% for category in categ %}
+            <a href="{% url 'category_detail' category.id %}">
+                <p>{{ category.title }}</p>
+            </a>
+         {% endfor %}
+    </ul>
 </body>
 </html>
