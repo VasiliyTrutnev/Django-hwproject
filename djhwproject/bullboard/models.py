@@ -50,6 +50,9 @@ class Ads(models.Model):
                                                                                  self.author.username, self.description)
     @property
     def get_favorites(self):
+        """
+        Показывает количество добавлений в избранное
+        """
         return self.favorites.count()
     @property
     def photo_ad_url(self):
