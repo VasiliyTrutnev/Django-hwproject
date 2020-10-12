@@ -1,121 +1,139 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from .models import Profile, Categories, Ads
 from django.db.models import Count
 from django.template import loader
 from .forms import AdForm
+from django.views.generic import ListView, View, CreateView, DeleteView, UpdateView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.urls import reverse
+from .exceptions import PermissionDenied
 
-def index(request):
-    """
-    Вьюха главной страницы, показывает наиболее популярные объявления
-    """
-    ad_queryset = Ads.objects.annotate(favorite_nums=Count('favorites')).order_by('-favorite_nums')[:3]
-    template = loader.get_template('bullboard/index.html')
-    context = {
-        'ads': ad_queryset,
-        'descr': 'Bullboard - это сайт частных объявлений нового поколения!',
-    }
-    return HttpResponse(template.render(context))
 
-def ad_create(request):
-    """
-    Вьюха для создания объявления
-    """
-    form = AdForm()
-    context = {'form': form}
+class IndexView(ListView):
+    """Вьюха для главной страницы с наиболее популярными объявлениями"""
+    model = Ads
+    template_name = 'bullboard/index.html'
+    context_object_name = 'ads'
+
+    def get_queryset(self):
+        return Ads.objects.annotate(favorite_nums=Count('favorites')).order_by('-favorite_nums')[:3]
+
+
+class AdCreateView(CreateView):
+    """Вьюха для создания объявления"""
+    form_class = AdForm
     template_name = 'bullboard/ad_create.html'
 
-    if request.method == 'GET':
-        return render(request, template_name, context)
-    elif request.method == 'POST':
-        form = AdForm(request.POST, request.FILES)
-
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        context = {}
         if form.is_valid():
             ad = form.save(commit=False)
             ad.author = request.user
             ad.save()
             context['ad_was_created'] = True
-            return render(request, template_name, context)
+            context['form'] = self.form_class
+            return render(request, self.template_name, context)
         else:
             context['ad_was_created'] = False
             context['form'] = form
-            return render(request, template_name, context)
+            return render(request, self.template_name, context)
 
 
-def ad_edit(request, ad_id):
+class AdEditView(UpdateView):
     """
     Вьюха для редактирования публикации
     """
-    ad = Ads.objects.get(id=ad_id)
-    response = "Редактирование объявления Author:{}| description:{}".format(
-        ad.author, ad.description)
-    return HttpResponse(response)
+    model = Ads
+    pk_url_kwarg = 'ad_id'
+    template_name = 'bullboard/ad_edit.html'
+    form_class = AdForm
 
-def ad_delete(response, ad_id):
-    """
-    Вьюха для удаления объявления
-    """
-    ad = Ads.objects.get(id=ad_id)
-    response = "Удаление объявления Author:{}| description:{}".format(
-        ad.author, ad.description)
-    return HttpResponse(response)
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            raise PermissionDenied("Вы должны быть автором объявления!")
+        return super(AdEditView, self).dispatch(request, *args, **kwargs)
 
-def favor_ad(request, ad_id):
-    """
-    Вьюха для добавления в избранное
-    """
-    print(request.POST)
-    ad = Ads.objects.get(id=ad_id)
-    if request.user in ad.favorites.all():
-        favor = ad.favorites.get(pk=request.user.id)
-        ad.favorites.remove(favor)
-    else:
-        ad.favorites.add(request.user)
-        ad.save()
-    return redirect(request.META.get('HTTP_REFERER'), request)
+    def get_success_url(self):
+        ad_id = self.kwargs['ad_id']
+        return reverse('ad_edit', args=(ad_id,))
 
-def allads(request):
-    """
-    Вьюха, отображающая все объявления
-    """
-    allads_queryset = Ads.objects.all()
-    context = {
-        'ad_feed': allads_queryset,
-    }
-    return render(request, 'bullboard/allads.html', context)
 
-def ad_detail(request, ad_id):
+class AdDeleteView(DeleteView):
     """
-    Вьюха для детального просмотра объявления
+        Вьюха для удаления объявления
+        """
+    model = Ads
+    pk_url_kwarg = 'ad_id'
+    template_name = 'bullboard/ad_delete.html'
 
-    """
-    try:
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            raise PermissionDenied("Вы должны быть автором объявления!")
+        return super(AdDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        ad_id = self.kwargs['ad_id']
+        return reverse('delete-ad-success', args=(ad_id,))
+
+
+class AdFavorView(View):
+    """Вьюха для добавления объявления в избранное"""
+    def get(self, request, ad_id, *args, **kwargs):
+        return redirect(reverse('ad', args=(ad_id,)))
+
+    def post(self, request, ad_id, *args, **kwargs):
+        ad = get_object_or_404(Ads, id=ad_id)
+        if ad.favorites.filter(id=request.user.id).exists():
+            favor = ad.favorites.get(pk=request.user.id)
+            ad.favorites.remove(favor)
+        else:
+            ad.favorites.add(request.user)
+            ad.save()
+        return redirect(request.META.get('HTTP_REFERER'), request)
+
+
+class AlladsView(ListView):
+    """Вьюха для просмотра всех объявлений"""
+    template_name = 'bullboard/allads.html'
+    model = Ads
+    context_object_name = 'ad_feed'
+
+    def get_queryset(self):
+        return Ads.objects.all()
+
+
+class AdDetailView(View):
+    """Вьюха для детального просмотра объявления"""
+    template_name = 'bullboard/ad_detail.html'
+
+    def get(self, request, ad_id, *args, **kwargs):
         ad = Ads.objects.get(id=ad_id)
-    except Ads.DoesNotExist:
-        raise Http404
-    context = {
-        'ad': ad
-    }
-    return render(request, 'bullboard/ad_detail.html', context)
+        context = {'ad': ad}
+        return render(request,self.template_name, context)
 
-def ad_by_category(request):
-    """
-    Вьюха для отображения всех категорий объявлений
 
-    """
-    categ = Categories.objects.all()
-    context = {
-        'categ': categ
-    }
-    return render(request, 'bullboard/categories.html', context)
+class AdByCategoryView(ListView):
+    """Вьюха для просмотра категорий объявлений"""
+    model = Categories
+    template_name = 'bullboard/categories.html'
+    context_object_name = 'categ'
 
-def category_detail(request, category_id):
-    """
-    Вьюха для фильтра объявлений по категоиям
+    def get_queryset(self):
+        return Categories.objects.all()
 
-    """
-    cat = Ads.objects.filter(id=category_id)
-    context = {
-        'cat': cat
-    }
-    return render(request, 'bullboard/category_detail.html', context)
+
+class CategoryDetailView(View):
+    """Вьюха для фильтра объявлений по категории"""
+    template_name = 'bullboard/category_detail.html'
+
+    def get(self, request, category_id, *args, **kwargs):
+        cat = Ads.objects.filter(id=category_id)
+        context = {'cat': cat}
+        return render(request,self.template_name, context)
+
