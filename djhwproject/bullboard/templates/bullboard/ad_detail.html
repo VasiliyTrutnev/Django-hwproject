@@ -11,5 +11,10 @@
     <p>{{ ad.description }}</p>
     <p>{{ ad.date_published }}</p>
     <p>{{ ad.author }}</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Опубликовать</button>
+    </form>
 </body>
 </html>

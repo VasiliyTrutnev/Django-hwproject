@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
-from .models import Profile, Categories, Ads
+from .models import Profile, Categories, Ads, Feedback
 from django.db.models import Count
 from django.template import loader
-from .forms import AdForm
-from django.views.generic import ListView, View, CreateView, DeleteView, UpdateView
+from .forms import AdForm, FeedbackForm
+from django.views.generic import ListView, View, CreateView, DeleteView, UpdateView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from .exceptions import PermissionDenied
+from django.utils import timezone
 
 
 class IndexView(ListView):
@@ -108,14 +109,41 @@ class AlladsView(ListView):
         return Ads.objects.all()
 
 
-class AdDetailView(View):
+class AdDetailView(DetailView):
     """Вьюха для детального просмотра объявления"""
+    model = Ads
+    feedback_form = FeedbackForm
+    pk_url_kwarg = 'ad_id'
     template_name = 'bullboard/ad_detail.html'
 
     def get(self, request, ad_id, *args, **kwargs):
         ad = Ads.objects.get(id=ad_id)
         context = {'ad': ad}
         return render(request,self.template_name, context)
+
+
+    @method_decorator(login_required)
+    def post(self, request, ad_id, *args, **kwargs):
+        """
+        Добавление отзыва
+        """
+        ad = get_object_or_404(Ads, pk=ad_id)
+        form = self.feedback_form(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.date_publish = timezone.now()
+            feedback.author = request.user
+            feedback.in_ad = ad
+            feedback.save()
+            return render(request=request, template_name=self.template_name, context={'feedback_form': self.feedback_form,
+                                                                                      'ad': ad,
+                                                                                      'feedbacks': ad.feedback_set.order_by(
+                                                                                          '-date_publish')})
+        else:
+            return render(request=request, template_name=self.template_name, context={'feedback_form': form,
+                                                                                      'ad': ad,
+                                                                                      'feedbacks': ad.feedback_set.order_by(
+                                                                                          '-date_publish')})
 
 
 class AdByCategoryView(ListView):

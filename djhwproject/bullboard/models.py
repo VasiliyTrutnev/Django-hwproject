@@ -60,7 +60,17 @@ class Ads(models.Model):
             return self.photo_ad.url
 
 
+class Feedback(models.Model):
+    """
+    Отзывы
+    """
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=700, blank=False)
+    in_ad = models.ForeignKey(Ads, on_delete=models.CASCADE)
+    date_publish = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return "{0} : {1}".format(self.author, self.text[:10] + "...")
 
 
 
