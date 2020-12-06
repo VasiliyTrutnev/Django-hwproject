@@ -20,11 +20,11 @@
             <button type="submit" class='btn btn-info'>Войти</button>
             </form>
             <hr>
-            <a href='{% url 'bullboard:password_reset' %}'> Забыли пароль? </a>
+            <a href='{% url 'password_reset' %}'> Забыли пароль? </a>
             {% else %}
                 <h3> Привет, {{ user.username }} </h3>
-                <a href='{% url 'bullboard:logout' %}'> Выйти? </a>
-                <a href='{% url 'bullboard:index' %}'> На главную </a>
+                <a href='{% url 'logout' %}'> Выйти? </a>
+                <a href='{% url 'index' %}'> На главную </a>
             {% endif %} 
         </article>
     </div>
