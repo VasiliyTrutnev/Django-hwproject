@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container text-center' xmlns:bullboard="http://www.w3.org/1999/xhtml">
+    <h1> <i class='nickname'> {{ profile.user.username }} </i> </h1> 
+    <h2> Дата рождения: 
+    {% if profile.date_birth %}
+        <i> {{ profile.date_birth|date:"d F Y" }} </i>
+    {% endif %}
+    </h2>
+    <h2> Обо мне: 
+    {% if profile.about %} 
+        <i> {{ profile.about }} </i> 
+    {% endif %}
+    </h2>
+    {% if profile.avatar %}
+    <h2> <img class='avatar' src= '{{ profile.avatar.url }}'/> </h2>
+    {% endif %}
+    {% if user.id == profile.user.id %}
+        <a href="{% url 'bullboard:edit-profile' profile.user.id %}" class='btn btn-info text-center'>
+            Редактировать профиль  </a>
+    {% else %}
+    {% endif %}
+
+    <ul class="list-unstyled components">
+    <li class="active">
+        <a href="#allads" data-toggle="collapse" class="btn create_btn">
+            Объявления
+        </a>
+    <ul class="collapse list-unstyled" id="ads">
+    {% if profile.user.ad_set.all  %}
+    <li class='active'>
+
+    <div class="album">
+        <div class="container">
+          <div class="row">
+            {% for post in profile.user.ad_set.all %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <a href='{% url 'bullboard:ad_detail' ad.id %}'> <img class="card-img-top" src = '{{ ad.image.url }}'
+                                                                      alt="Card image cap"> </a>
+                <div class="card-body">
+                  <p class="card-text"> {{ ad.description }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted"> <a href= '{% url 'bullboard:profile' ad.author.id%}'> {{ad.author.username}} </a> </small>
+                    <small class="text-muted"> {{ ad.date_edit|date:"d F G:i"  }} </small>
+                    <small class="text-muted"> {{ ad.favorites }} like{{ad.favorites|pluralize}} </small>
+                    <form method='post' action='{% url 'bullboard:favor_ad' ad.id %}'>
+                        {% csrf_token %} <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+        </ul>
+        </div>
+        </div>
+    </div>
+    {% else %}
+            <a> Объявлений нет. </a>
+    {% endif %}
+    </ul>
+    </li>
+</ul>   
+</div>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+</script>
+{% endblock %}

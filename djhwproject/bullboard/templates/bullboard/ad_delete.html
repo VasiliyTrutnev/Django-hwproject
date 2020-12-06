@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Удаление объявления {{ ad.title }}</title>
+    {% if ad.author != user %}
+        <h1 class='msg'> Удалить объявление может только его автор </h1>
+    {% else %}
+        <h1 class='msg'> Вы уверены, что хотите удалить объявление? </h1>
+            <form method="post" action="{% url 'bullboard:ad_delete' ad.id %}">
+                {% csrf_token %} <button type="submit"> Удалить </button>
+            </form>
+            <a href="{% url 'bullboard:ad_detail' ad.id %}"> Нет </a>
+    {% endif %}
 </head>
 <body>
 

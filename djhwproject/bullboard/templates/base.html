@@ -3,12 +3,12 @@
 <html lang="en">
   <head>
     {% block title %}
-        <title>Instagramik</title>
+        <title>Bullboard</title>
     {% endblock title %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bullboard/css/style.css' %}">
     {% block extrahead %}
     {% endblock extrahead %}
   </head>
@@ -19,7 +19,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="{% url 'core:index' %}"> Instagramik </a>
+  <a class="navbar-brand" href="{% url 'bullboard:index' %}"> Bullboard </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -27,10 +27,10 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'core:feed' %}"> Лента </a>
+        <a class="nav-link" href="{% url 'core:allads' %}"> Все объявления </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'core:post_create' %}"> Создать пост </a>
+        <a class="nav-link" href="{% url 'core:ad_create' %}"> Создать объявление </a>
       </li>
 
     </ul>
@@ -41,16 +41,16 @@
               Привет, {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'core:profile' user.id %}"> Профиль </a>
+            <a class="dropdown-item" href="{% url 'bullboard:profile' user.id %}"> Профиль </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'core:logout' %}"> Выйти </a>
+            <a class="dropdown-item" href="{% url 'bullboard:logout' %}"> Выйти </a>
             </div>
         {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:login' %}"> Войти </a>
+                <a class="nav-link" href="{% url 'bullboard:login' %}"> Войти </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:signup' %}"> Зарегистрироваться </a>
+                <a class="nav-link" href="{% url 'bullboard:signup' %}"> Зарегистрироваться </a>
             </li>
         {% endif %}
     </ul>

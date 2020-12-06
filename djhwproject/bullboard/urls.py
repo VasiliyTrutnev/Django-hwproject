@@ -1,7 +1,13 @@
 from django.conf.urls import url
-from django.urls import path
+from django.contrib.auth.decorators import login_required
+from django.urls import path, reverse_lazy
 from . import views
 from django.views.generic import TemplateView
+from django.contrib.auth.views import PasswordResetDoneView, PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
+
+from .views import LoginView, SignupView, ProfileView, EditProfileView, logout_view
+
+
 
 urlpatterns = [
     path('index/', views.IndexView.as_view(), name='index'),
@@ -17,3 +23,18 @@ urlpatterns = [
     path('category_detail/<int:category_id>', views.CategoryDetailView.as_view(), name='category_detail'),
 
 ]
+
+urlpatterns += [
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('<int:user_id>/profile/', ProfileView.as_view(), name='profile'),
+    path('<int:user_id>/profile/edit', login_required(EditProfileView.as_view()), name='edit-profile'),
+    path('signup/', SignupView.as_view(), name='signup'),
+    path('password_reset/', PasswordResetView.as_view(success_url=reverse_lazy('users:password_reset_done'),
+                                                      template_name='my_auth/password_reset.html',
+         name='password_reset')),
+    path('password_reset/done', PasswordResetDoneView.as_view(template_name='my_auth/password_reset_done.html'),
+         name='password_reset_done'),
+    path('password_reset/<str:uidb64>/<slug:token>', PasswordResetConfirmView.as_view(
+        success_url=reverse_lazy('users:password_reset_complete')), name='password_reset_confirm'),
+    path('password_reset/complete', PasswordResetCompleteView.as_view(), name='password_reset_complete')]
