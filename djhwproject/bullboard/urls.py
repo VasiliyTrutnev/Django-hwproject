@@ -30,9 +30,8 @@ urlpatterns += [
     path('<int:user_id>/profile/', ProfileView.as_view(), name='profile'),
     path('<int:user_id>/profile/edit', login_required(EditProfileView.as_view()), name='edit-profile'),
     path('signup/', SignupView.as_view(), name='signup'),
-    path('password_reset/', PasswordResetView.as_view(success_url=reverse_lazy('users:password_reset_done'),
-                                                      template_name='my_auth/password_reset.html',
-         name='password_reset')),
+    path('password_reset/', PasswordResetView.as_view(template_name='my_auth/password_reset.html'),
+         name='password_reset'),
     path('password_reset/done', PasswordResetDoneView.as_view(template_name='my_auth/password_reset_done.html'),
          name='password_reset_done'),
     path('password_reset/<str:uidb64>/<slug:token>', PasswordResetConfirmView.as_view(
