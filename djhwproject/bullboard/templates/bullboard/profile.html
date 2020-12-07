@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class='container text-center' xmlns:bullboard="http://www.w3.org/1999/xhtml">
-    <h1> <i class='nickname'> {{ profile.user.username }} </i> </h1> 
+    <h1> <i class='nickname'> {{ profile.user }} </i> </h1>
     <h2> Дата рождения: 
     {% if profile.birth_date %}
         <i> {{ profile.birth_date|date:"d F Y" }} </i>
