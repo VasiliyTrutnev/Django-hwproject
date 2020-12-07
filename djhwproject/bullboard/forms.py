@@ -25,7 +25,7 @@ class AdForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control', 'placeholder': 'Название объявления'
             }),
-            'categ': forms.TextInput(attrs={
+            'categ': forms.Select(attrs={
                 'class': 'form-control', 'placeholder': 'Категория объявления'
             })
         }
