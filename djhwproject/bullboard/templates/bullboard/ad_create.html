@@ -6,9 +6,9 @@
 {% if user.is_authenticated %}
     <div class='container create_post mx-auto text-center'>
     {% if ad_was_created %}
-            <h1> Пост успешно создан. </h1>
+            <h1> Объявление успешно размещено </h1>
     <h3> Хотите <a href='{% url 'ad_create' %}'> создать новый пост </a> или вернуться на
-    <a href='{% url '' %}'> главную страницу </a> </h3>
+    <a href='{% url 'index' %}'> главную страницу </a> </h3>
     {% else %}
         <div class="form-group">
         <form method='post' enctype="multipart/form-data">
@@ -24,7 +24,7 @@
     {% endif %}
     </div>
 {% else %}
-    <h3 class='msg'> Чтобы создавать посты, вам нужно <a href='{% url 'login'%}'> войти </a> или
+    <h3 class='msg'> Чтобы размещать объявления, вам нужно <a href='{% url 'login'%}'> войти </a> или
     <a href='{% url 'signup'%}'> зарегистрироваться </a> </h3>
 {% endif %}
 {% endblock content %}
