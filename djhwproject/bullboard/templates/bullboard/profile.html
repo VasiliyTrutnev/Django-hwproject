@@ -17,7 +17,7 @@
     <h2> <img class='avatar' src= '{{ profile.avatar.url }}'/> </h2>
     {% endif %}
     {% if user.id == profile.user.id %}
-        <a href="{% url 'bullboard:edit-profile' profile.user.id %}" class='btn btn-info text-center'>
+        <a href="{% url 'edit-profile' profile.user.id %}" class='btn btn-info text-center'>
             Редактировать профиль  </a>
     {% else %}
     {% endif %}
@@ -34,18 +34,18 @@
     <div class="album">
         <div class="container">
           <div class="row">
-            {% for post in profile.user.ad_set.all %}
+            {% for ad in profile.user.ad_set.all %}
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
-                <a href='{% url 'bullboard:ad_detail' ad.id %}'> <img class="card-img-top" src = '{{ ad.image.url }}'
+                <a href='{% url 'ad_detail' ad.id %}'> <img class="card-img-top" src = '{{ ad.photo_ad.url }}'
                                                                       alt="Card image cap"> </a>
                 <div class="card-body">
                   <p class="card-text"> {{ ad.description }}</p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted"> <a href= '{% url 'bullboard:profile' ad.author.id%}'> {{ad.author.username}} </a> </small>
-                    <small class="text-muted"> {{ ad.date_edit|date:"d F G:i"  }} </small>
+                    <small class="text-muted"> <a href= '{% url 'profile' ad.author.id%}'> {{ad.author.username}} </a> </small>
+                    <small class="text-muted"> {{ ad.date_published|date:"d F G:i"  }} </small>
                     <small class="text-muted"> {{ ad.favorites }} like{{ad.favorites|pluralize}} </small>
-                    <form method='post' action='{% url 'bullboard:favor_ad' ad.id %}'>
+                    <form method='post' action='{% url 'favor_ad' ad.id %}'>
                         {% csrf_token %} <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
                     </form>
                   </div>
