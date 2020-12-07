@@ -14,7 +14,7 @@ class Profile(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     birth_date = models.DateField('Date of birth', null=True, blank=True)
-    avatar = models.ImageField(upload_to=avatar_path, default=None)
+    avatar = models.ImageField(upload_to=avatar_path, default=None, blank=True, null=True)
     about = models.TextField('About', max_length=500, blank=True)
 
     def __str__(self):

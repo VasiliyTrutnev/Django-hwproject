@@ -195,7 +195,10 @@ class ProfileView(DetailView):
     template_name = 'bullboard/profile.html'
 
     def get_object(self):
-        return get_object_or_404(Profile, user__id=self.kwargs['user_id'])
+        if self.request.user.is_authenticated:
+            return Profile.objects.get_or_create(user=self.request.user)[0]
+        raise Http404
+
 
 
 @login_required
