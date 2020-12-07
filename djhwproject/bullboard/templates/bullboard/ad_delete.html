@@ -7,7 +7,7 @@
     <h1 class='msg'> Вы уверены, что хотите удалить это объявление? </h1>
         <div class='container text-center'>
             <div class="btn-group text-center" role="group">
-                <form method='post' action='{% url 'ad_delete' ad.id %}'>
+                <form method='ad_detail' action='{% url 'ad_delete' ad.id %}'>
                     {% csrf_token %} <button type='submit' class='btn btn-danger'> Удалить </button>
                 </form>
                 <a href="{% url 'ad_detail' ad.id %}" class='btn btn-info'>  Нет </a>

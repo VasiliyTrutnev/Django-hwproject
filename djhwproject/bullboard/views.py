@@ -73,6 +73,7 @@ class AdDeleteView(DeleteView):
     model = Ads
     pk_url_kwarg = 'ad_id'
     template_name = 'bullboard/ad_delete.html'
+    context_object_name = 'ad'
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -125,7 +126,7 @@ class AdDetailView(DetailView):
         if request.user.is_authenticated:
             context['feedback_form'] = self.feedback_form()
         return render(request, self.template_name, context)
-        
+
 
 
     @method_decorator(login_required)
