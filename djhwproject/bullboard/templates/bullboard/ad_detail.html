@@ -17,12 +17,35 @@
             <p> Автор:
                 <a href="{% url 'profile' ad.author.id %}">  {{ ad.author.username }} </b> </a>
             </p>
-            {% if ad.author == user %}
-                <a class='btn btn-info' href='{% url 'ad_edit' ad.id %}'> Редактировать объявление </a>
-            {% endif %}
-
+    </div>
+    <div class='block feedback mx-auto'>
+        <h1> Отзывы </h1>
+        {% if feedbacks.all %}
+        {% for feedback in feedbacks.all %}
+        <hr>
+            <h3> <b> {{ feedback.author.username }} </b> : {{feedback.text}} </h3>
+            <p> {{feedback.date_publish|date:"d F G:i" }} </p>
+        {% endfor %}
+        {% else %}
+            <h3 class='msg'> Нет отзывов </h3>
+        {% endif %}
+        <hr>
+        {% if feedback_form %}
+            <form method='post'>
+                <p> Комментарий:
+                {% csrf_token %} {{feedback_form.text}} </p>
+            <button type='submit' class='btn create_btn'> Отправить </button>
+            </form>
+        {% else %}
+            <p style='color:red;'> Отзывы только для зарегистрированных пользователей </p>
         {% endif %}
     </div>
+        {% if ad.author == user %}
+            <a class='btn btn-info' href='{% url 'ad_edit' ad.id %}'> Редактировать объявление </a>
+        {% endif %}
+
+{% endif %}
+
 {% endif %}
 {% endblock content %}
 
