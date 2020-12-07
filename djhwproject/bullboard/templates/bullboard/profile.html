@@ -28,13 +28,13 @@
             Объявления
         </a>
     <ul class="collapse list-unstyled" id="ads">
-    {% if profile.user.ad_set.all  %}
+    {% if profile.user.ads_set.all  %}
     <li class='active'>
 
     <div class="album">
         <div class="container">
           <div class="row">
-            {% for ad in profile.user.ad_set.all %}
+            {% for ad in profile.user.ads_set.all %}
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
                 <a href='{% url 'ad_detail' ad.id %}'> <img class="card-img-top" src = '{{ ad.photo_ad.url }}'
