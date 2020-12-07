@@ -180,7 +180,7 @@ class LoginView(LoginView):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect(reverse('bullboard:index'), request)
+                return redirect(reverse('index'), request)
             else:
                 context = {}
                 context['form'] = form
@@ -201,7 +201,7 @@ class ProfileView(DetailView):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect(reverse("bullboard:index"))
+    return redirect(reverse("index"))
 
 
 class SignupView(View):
@@ -243,4 +243,4 @@ class EditProfileView(UpdateView):
 
     def get_success_url(self):
         user_id = self.kwargs['user_id']
-        return reverse('bullboard:profile', args=(user_id,))
+        return reverse('profile', args=(user_id,))
