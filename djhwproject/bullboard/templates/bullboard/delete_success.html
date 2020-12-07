@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Объявление {{ ad.title }} успешно удалено</title>
-    <h1> <a href="{% url 'index' %}"> Вернуться на главную </a> или
-        <a href="{% url 'ad_create' %}"> создать новое объявление </a> </h1>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %} 
+<h1 class='msg'> Объявление удалено </h1>
+<h2 class='msg'> <a href='{% url 'index' %}' class='msg'> Вернуться на главную </a> или
+<a href='{% url 'ad_create' %}' class='msg'> создать новое объявление </a> </h2>
+{% endblock content %} 
