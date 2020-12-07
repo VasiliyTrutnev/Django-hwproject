@@ -109,7 +109,7 @@ class UpdateProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['date_birth', 'about', 'avatar']
+        fields = ['birth_date', 'about', 'avatar']
         labels = {
                 'about': "Обо мне",
                 'avatar': "Аватар",
