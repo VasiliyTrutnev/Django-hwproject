@@ -4,8 +4,8 @@
 <div class='container text-center' xmlns:bullboard="http://www.w3.org/1999/xhtml">
     <h1> <i class='nickname'> {{ profile.user.username }} </i> </h1> 
     <h2> Дата рождения: 
-    {% if profile.date_birth %}
-        <i> {{ profile.date_birth|date:"d F Y" }} </i>
+    {% if profile.birth_date %}
+        <i> {{ profile.birth_date|date:"d F Y" }} </i>
     {% endif %}
     </h2>
     <h2> Обо мне: 
