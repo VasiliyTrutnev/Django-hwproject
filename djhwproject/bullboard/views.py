@@ -119,9 +119,13 @@ class AdDetailView(DetailView):
     template_name = 'bullboard/ad_detail.html'
 
     def get(self, request, ad_id, *args, **kwargs):
-        ad = Ads.objects.get(id=ad_id)
-        context = {'ad': ad}
-        return render(request,self.template_name, context)
+        ad= Ads.objects.get(id=ad_id)
+        feedbacks = Feedback.objects.filter(in_ad__pk=ad_id).order_by('-date_publish')
+        context = {'ad':ad, 'feedbacks': feedbacks}
+        if request.user.is_authenticated:
+            context['feedback_form'] = self.feedback_form()
+        return render(request, self.template_name, context)
+        
 
 
     @method_decorator(login_required)
