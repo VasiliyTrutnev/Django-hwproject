@@ -17,7 +17,6 @@
                       <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted"> <a href= '{% url 'profile' ad.author.id%}'> {{ad.author.username}} </a> </small>
                         <small class="text-muted"> {{ ad.date_edit|date:"d F G:i"  }} </small>
-                        <small class="text-muted"> {{ ads.favorites }} like{{ads.favorites|pluralize}} </small>
                         <div class="btn-group">
                             <form method='post' action='{% url 'favor_ad' ad.id %}'>
                                 {% csrf_token %} <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
