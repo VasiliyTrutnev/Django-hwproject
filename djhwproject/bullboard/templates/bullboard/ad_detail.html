@@ -1,15 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends 'base.html' %}
+{% block content %}
+{% block title %}
     <title>{{ ad.title }}</title>
-</head>
-<body>
-    <p>{{ ad.title }}</p>
-    <p><img alt="ad's image" src="{{ ad.photo_ad.url }}"
-            style="width: 1000px; height: 1000px"></p>
-    <p>{{ ad.description }}</p>
-    <p>{{ ad.date_published }}</p>
-    <p>{{ ad.author }}</p>
-</body>
-</html>
+{% endblock title %}
+{% if user.is_authenticated %}
+    <div class='container post-container'>
+        {% if ad %}
+            <p> <img class='post-container' src='{{ ad.photo_ad.url }}' height='500'/> </p>
+            <p> Описание: {{ ad.description }} </p>
+            <p> Дата опубликования: {{ ad.date_published|date:"d F Y G:i" }} </p>
+            <form method='post' action='{% url 'favor_ad' ad.id %}'>{% csrf_token %}
+            <p> {{ ad.favorites }} like{{ad.favorites|pluralize}}
+                <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
+            </p>
+            </form>
+            <p> Автор:
+                <a href="{% url 'profile' ad.author.id %}">  {{ ad.author.username }} </b> </a>
+            </p>
+            {% if ad.author == user %}
+                <a class='btn btn-info' href='{% url 'ad_edit' ad.id %}'> Редактировать объявление </a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock content %}
+

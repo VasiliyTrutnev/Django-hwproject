@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% block title %}
-        <title>Категории объявлений</title>
-    {% endblock title %}
-    <ul>
-             {% for category in categ %}
-                <a href="{% url 'category_detail' category.id %}">
-                    <p>{{ category.title }}</p>
-                </a>
-             {% endfor %}
-    </ul>
-<body>
-
-</body>
-</html>
+{% block title %}
+    <title>Категории объявлений</title>
+{% endblock title %}
+{% if user.is_authenticated %}
+        {% if categ %}
+            <div class="container">
+                <ul>
+                         {% for category in categ %}
+                            <a href="{% url 'category_detail' category.id %}">
+                                <p>{{ category.title }}</p>
+                            </a>
+                         {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+{% endif %}
+{% endblock content %}

@@ -42,7 +42,7 @@ class Ads(models.Model):
     date_published = models.DateTimeField(auto_now_add=True)
     photo_ad = models.ImageField(upload_to=ads_path)
     favorites = models.ManyToManyField(User, related_name='users_favorites', blank=True)
-    categ = models.ForeignKey(Categories, on_delete=models.DO_NOTHING, blank=True, null=True)
+    categ = models.ForeignKey(Categories, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return 'Title {}, сategory{}, date {}, author {}, description {}'.format(self.title, self.categ,

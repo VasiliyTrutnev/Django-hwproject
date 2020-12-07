@@ -1,16 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" href="{% static 'bullboard/css/style.css' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создание объявления </title>
-</head>
-<body>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Опубликовать</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+{% block title %}
+    <title>Создать объявление</title>
+{% endblock title %}
+{% if user.is_authenticated %}
+    <div class='container create_post mx-auto text-center'>
+    {% if ad_was_created %}
+            <h1> Пост успешно создан. </h1>
+    <h3> Хотите <a href='{% url 'ad_create' %}'> создать новый пост </a> или вернуться на
+    <a href='{% url '' %}'> главную страницу </a> </h3>
+    {% else %}
+        <div class="form-group">
+        <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <a class='form_control'> {{field.label}} </a>
+                    {{ field }}
+                <ul> {{ field.errors }} </ul>
+            {% endfor %}
+        <button type='submit' class="btn create_btn text-center"> Создать объявление </button>
+        </form>
+        </div>
+    {% endif %}
+    </div>
+{% else %}
+    <h3 class='msg'> Чтобы создавать посты, вам нужно <a href='{% url 'login'%}'> войти </a> или
+    <a href='{% url 'signup'%}'> зарегистрироваться </a> </h3>
+{% endif %}
+{% endblock content %}
+
+
+

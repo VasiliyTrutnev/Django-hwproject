@@ -10,7 +10,7 @@ from .views import LoginView, SignupView, ProfileView, EditProfileView, logout_v
 
 
 urlpatterns = [
-    path('index/', views.IndexView.as_view(), name='index'),
+    path('', views.IndexView.as_view(), name='index'),
     path('allads/', views.AlladsView.as_view(), name='allads'),
     path('allads/create', views.AdCreateView.as_view(), name='ad_create'),
     path('allads/<int:ad_id>/edit', views.AdEditView.as_view(), name='ad_edit'),
